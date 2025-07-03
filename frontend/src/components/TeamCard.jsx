@@ -1,14 +1,7 @@
 import React from "react";
-import {
-  Card,
-  CardContent,
-  Typography,
-  CardActions,
-  Button,
-  CardMedia,
-} from "@mui/material";
+import { Card, CardContent, Typography, CardActions, Button, CardMedia } from "@mui/material";
 
-const TeamCard = ({ team, onEdit, onDelete, onViewProfile }) => {
+const TeamCard = ({ team, onViewProfile }) => {
   return (
     <Card>
       {/* Display the team logo */}
@@ -24,12 +17,6 @@ const TeamCard = ({ team, onEdit, onDelete, onViewProfile }) => {
         <Typography variant="h6">{team.TeamName}</Typography>
       </CardContent>
       <CardActions>
-        <Button size="small" color="primary" onClick={() => onEdit(team)}>
-          Edit
-        </Button>
-        <Button size="small" color="secondary" onClick={() => onDelete(team.TeamID)}>
-          Delete
-        </Button>
         <Button size="small" color="info" onClick={() => onViewProfile(team.TeamID)}>
           View Profile
         </Button>

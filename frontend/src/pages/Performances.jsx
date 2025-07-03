@@ -2,15 +2,11 @@ import React, { useState, useEffect } from "react";
 import { Container, Grid, Typography, Button } from "@mui/material";
 import PerformanceCard from "../components/PerformanceCard";
 import AddPerformanceModal from "../components/AddPerformanceModal";
-import EditPerformanceModal from "../components/EditPerformanceModal";
 import API from "../services/api";
 
 const Performances = () => {
   const [performances, setPerformances] = useState([]);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [currentPerformance, setCurrentPerformance] = useState(null);
-  const [currentType, setCurrentType] = useState("");
 
   // Fetch performances from the backend
   useEffect(() => {
@@ -27,6 +23,8 @@ const Performances = () => {
 
   // Handle adding a performance
   const handleAddPerformance = async (type, newPerformance) => {
+    console.log("Adding performance:", { type, newPerformance }); // Debugging
+
     try {
       const response = await API.post(`/performances/${newPerformance.PlayerID}/${type}`, newPerformance);
       setPerformances((prevPerformances) =>
@@ -39,33 +37,8 @@ const Performances = () => {
       setIsAddModalOpen(false);
       alert("Performance added successfully!");
     } catch (error) {
-      console.error("Error adding performance:", error);
+      console.error("Error adding performance:", error); // Log the error
       alert("Failed to add performance. Please try again.");
-    }
-  };
-
-  // Handle editing a performance
-  const handleEditPerformance = (type, performance) => {
-    setCurrentType(type);
-    setCurrentPerformance(performance);
-    setIsEditModalOpen(true);
-  };
-
-  const saveEditedPerformance = async (updatedPerformance) => {
-    try {
-      const response = await API.put(`/performances/${updatedPerformance.PlayerID}/${currentType}`, updatedPerformance);
-      setPerformances((prevPerformances) =>
-        prevPerformances.map((performance) =>
-          performance.PlayerID === updatedPerformance.PlayerID
-            ? { ...performance, [currentType]: response.data.performance }
-            : performance
-        )
-      );
-      setIsEditModalOpen(false);
-      alert("Performance updated successfully!");
-    } catch (error) {
-      console.error("Error editing performance:", error);
-      alert("Failed to update performance. Please try again.");
     }
   };
 
@@ -107,7 +80,6 @@ const Performances = () => {
           <Grid item xs={12} sm={6} md={4} key={performance.PlayerID}>
             <PerformanceCard
               performance={performance}
-              onEdit={(type) => handleEditPerformance(type, performance[type])}
               onDelete={(type) => handleDeletePerformance(performance.PlayerID, type)}
             />
           </Grid>
@@ -122,15 +94,6 @@ const Performances = () => {
           Name: performance.Name,
         }))} // Ensure players prop is passed
       />
-      {currentPerformance && (
-        <EditPerformanceModal
-          open={isEditModalOpen}
-          onClose={() => setIsEditModalOpen(false)}
-          onSave={saveEditedPerformance}
-          initialData={currentPerformance}
-          type={currentType}
-        />
-      )}
     </Container>
   );
 };

@@ -6,9 +6,10 @@ import {
   DialogActions,
   TextField,
   Button,
+  MenuItem,
 } from "@mui/material";
 
-const AddPlayerModal = ({ open, onClose, onAdd, initialData }) => {
+const AddPlayerModal = ({ open, onClose, onAdd, initialData, teams }) => {
   const [name, setName] = useState("");
   const [age, setAge] = useState("");
   const [role, setRole] = useState("");
@@ -85,13 +86,19 @@ const AddPlayerModal = ({ open, onClose, onAdd, initialData }) => {
           onChange={(e) => setRole(e.target.value)}
         />
         <TextField
-          label="Team ID"
-          type="number"
+          select
+          label="Team"
           fullWidth
           margin="normal"
           value={teamID}
           onChange={(e) => setTeamID(e.target.value)}
-        />
+        >
+          {teams.map((team) => (
+            <MenuItem key={team.TeamID} value={team.TeamID}>
+              {team.TeamName}
+            </MenuItem>
+          ))}
+        </TextField>
         <TextField
           label="Total Matches"
           type="number"

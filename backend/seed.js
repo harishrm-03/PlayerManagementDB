@@ -55,8 +55,28 @@ const seedDatabase = async () => {
 
     // Create Matches
     const matches = await Match.bulkCreate([
-      { Date: new Date("2023-04-01"), Team1ID: teams[0].TeamID, Team2ID: teams[1].TeamID, WinnerTeamID: teams[0].TeamID, Venue: "Wankhede Stadium", MatchType: "T20" },
-      { Date: new Date("2023-04-02"), Team1ID: teams[2].TeamID, Team2ID: teams[3].TeamID, WinnerTeamID: teams[3].TeamID, Venue: "Chinnaswamy Stadium", MatchType: "T20" },
+      {
+        Date: new Date("2023-04-01"),
+        Team1ID: teams[0].TeamID,
+        Team2ID: teams[1].TeamID,
+        WinnerTeamID: teams[0].TeamID,
+        Venue: "Wankhede Stadium",
+        MatchType: "T20",
+        BestBowlerID: players[1].PlayerID, // Jasprit Bumrah
+        BestBatsmanID: players[0].PlayerID, // Rohit Sharma
+        PlayerOfTheMatchID: players[0].PlayerID, // Rohit Sharma
+      },
+      {
+        Date: new Date("2023-04-02"),
+        Team1ID: teams[2].TeamID,
+        Team2ID: teams[3].TeamID,
+        WinnerTeamID: teams[3].TeamID,
+        Venue: "Chinnaswamy Stadium",
+        MatchType: "T20",
+        BestBowlerID: players[9].PlayerID, // Andre Russell
+        BestBatsmanID: players[6].PlayerID, // Virat Kohli
+        PlayerOfTheMatchID: players[9].PlayerID, // Andre Russell
+      },
       { Date: new Date("2023-04-05"), Team1ID: teams[0].TeamID, Team2ID: teams[2].TeamID, WinnerTeamID: teams[2].TeamID, Venue: "Wankhede Stadium", MatchType: "T20" },
       { Date: new Date("2023-04-06"), Team1ID: teams[1].TeamID, Team2ID: teams[3].TeamID, WinnerTeamID: teams[1].TeamID, Venue: "Chepauk Stadium", MatchType: "T20" },
     ]);
@@ -70,13 +90,29 @@ const seedDatabase = async () => {
 
     // Create Performances
     const battingPerformances = await BattingPerformance.bulkCreate([
-      { PlayerID: players[0].PlayerID, MatchesPlayed: 227, Innings: 220, Runs: 5879, HighestScore: 109, BattingAverage: 30.3, StrikeRate: 130.0, Fifties: 40, Hundreds: 1 },
-      { PlayerID: players[6].PlayerID, MatchesPlayed: 223, Innings: 215, Runs: 6624, HighestScore: 122, BattingAverage: 36.2, StrikeRate: 129.0, Fifties: 44, Hundreds: 5 },
+      // Match 1: Mumbai Indians vs Chennai Super Kings
+      { PlayerID: players[0].PlayerID, MatchID: matches[0].MatchID, MatchesPlayed: 1, Innings: 1, Runs: 80, HighestScore: 80, BattingAverage: 80.0, StrikeRate: 133.3, Fifties: 1, Hundreds: 0 }, // Rohit Sharma
+      { PlayerID: players[2].PlayerID, MatchID: matches[0].MatchID, MatchesPlayed: 1, Innings: 1, Runs: 50, HighestScore: 50, BattingAverage: 50.0, StrikeRate: 125.0, Fifties: 1, Hundreds: 0 }, // Suryakumar Yadav
+      { PlayerID: players[3].PlayerID, MatchID: matches[0].MatchID, MatchesPlayed: 1, Innings: 1, Runs: 40, HighestScore: 40, BattingAverage: 40.0, StrikeRate: 100.0, Fifties: 0, Hundreds: 0 }, // MS Dhoni
+      { PlayerID: players[4].PlayerID, MatchID: matches[0].MatchID, MatchesPlayed: 1, Innings: 1, Runs: 30, HighestScore: 30, BattingAverage: 30.0, StrikeRate: 120.0, Fifties: 0, Hundreds: 0 }, // Ravindra Jadeja
+
+      // Match 2: Royal Challengers Bangalore vs Kolkata Knight Riders
+      { PlayerID: players[6].PlayerID, MatchID: matches[1].MatchID, MatchesPlayed: 1, Innings: 1, Runs: 70, HighestScore: 70, BattingAverage: 70.0, StrikeRate: 140.0, Fifties: 1, Hundreds: 0 }, // Virat Kohli
+      { PlayerID: players[7].PlayerID, MatchID: matches[1].MatchID, MatchesPlayed: 1, Innings: 1, Runs: 40, HighestScore: 40, BattingAverage: 40.0, StrikeRate: 110.0, Fifties: 0, Hundreds: 0 }, // Faf du Plessis
+      { PlayerID: players[9].PlayerID, MatchID: matches[1].MatchID, MatchesPlayed: 1, Innings: 1, Runs: 60, HighestScore: 60, BattingAverage: 60.0, StrikeRate: 150.0, Fifties: 1, Hundreds: 0 }, // Andre Russell
+      { PlayerID: players[10].PlayerID, MatchID: matches[1].MatchID, MatchesPlayed: 1, Innings: 1, Runs: 30, HighestScore: 30, BattingAverage: 30.0, StrikeRate: 100.0, Fifties: 0, Hundreds: 0 }, // Sunil Narine
+
     ]);
 
     const bowlingPerformances = await BowlingPerformance.bulkCreate([
-      { PlayerID: players[1].PlayerID, MatchesPlayed: 120, Innings: 118, RunsConceded: 3200, Wickets: 145, BestBowling: "5/14", Economy: 7.4, BowlingStrikeRate: 18.0 },
-      { PlayerID: players[9].PlayerID, MatchesPlayed: 100, Innings: 95, RunsConceded: 2500, Wickets: 90, BestBowling: "4/20", Economy: 8.0, BowlingStrikeRate: 20.0 },
+      // Match 1: Mumbai Indians vs Chennai Super Kings
+      { PlayerID: players[1].PlayerID, MatchID: matches[0].MatchID, MatchesPlayed: 1, Innings: 1, RunsConceded: 20, Wickets: 3, BestBowling: "3/20", Economy: 5.0, BowlingStrikeRate: 10.0 }, // Jasprit Bumrah
+      { PlayerID: players[5].PlayerID, MatchID: matches[0].MatchID, MatchesPlayed: 1, Innings: 1, RunsConceded: 30, Wickets: 2, BestBowling: "2/30", Economy: 7.5, BowlingStrikeRate: 15.0 }, // Deepak Chahar
+
+      // Match 2: Royal Challengers Bangalore vs Kolkata Knight Riders
+      { PlayerID: players[8].PlayerID, MatchID: matches[1].MatchID, MatchesPlayed: 1, Innings: 1, RunsConceded: 25, Wickets: 2, BestBowling: "2/25", Economy: 6.25, BowlingStrikeRate: 12.5 }, // Mohammed Siraj
+      { PlayerID: players[10].PlayerID, MatchID: matches[1].MatchID, MatchesPlayed: 1, Innings: 1, RunsConceded: 35, Wickets: 3, BestBowling: "3/35", Economy: 8.75, BowlingStrikeRate: 10.0 }, // Sunil Narine
+
     ]);
 
     const fieldingPerformances = await FieldingPerformance.bulkCreate([

@@ -114,6 +114,8 @@ router.post("/:playerID/:type", async (req, res) => {
   const { playerID, type } = req.params;
   const performanceData = req.body;
 
+  console.log("Incoming request:", { playerID, type, performanceData }); // Debugging
+
   try {
     let performanceModel;
 
@@ -144,7 +146,7 @@ router.post("/:playerID/:type", async (req, res) => {
 
     res.status(201).json({ message: "Performance added successfully", newPerformance });
   } catch (error) {
-    console.error("Error adding performance:", error);
+    console.error("Error adding performance:", error); // Log the error
     res.status(500).json({ error: "Failed to add performance" });
   }
 });

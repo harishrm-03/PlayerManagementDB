@@ -181,6 +181,7 @@ const Players = () => {
         open={isAddModalOpen}
         onClose={() => setIsAddModalOpen(false)}
         onAdd={handleAddPlayer}
+        teams={teams} // Pass the list of teams
       />
       {currentPlayer && (
         <AddPlayerModal
@@ -188,6 +189,7 @@ const Players = () => {
           onClose={() => setIsEditModalOpen(false)}
           onAdd={handleEditPlayer}
           initialData={currentPlayer}
+          teams={teams} // Pass the list of teams
         />
       )}
     </Container>

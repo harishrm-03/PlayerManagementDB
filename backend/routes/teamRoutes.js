@@ -33,7 +33,7 @@ router.get("/:id", async (req, res) => {
   try {
     const team = await Team.findByPk(req.params.id, {
       include: [
-        { model: Player, attributes: ["PlayerID", "Name", "Role", "Age"] },
+        { model: Player, attributes: ["PlayerID", "Name", "Role", "Age", "PhotoURL"] }, // Include PhotoURL
         { model: Player, as: "Captain", attributes: ["Name"] },
       ],
     });
@@ -55,6 +55,7 @@ router.get("/:id", async (req, res) => {
 
     res.json({ team, matches });
   } catch (error) {
+    console.error("Error fetching team profile:", error);
     res.status(500).json({ error: "Error fetching team profile" });
   }
 });
@@ -111,6 +112,46 @@ router.get("/compare/:team1ID/:team2ID", async (req, res) => {
     });
   } catch (error) {
     res.status(500).json({ error: "Error comparing teams" });
+  }
+});
+
+router.get("/:id/leaderboard", async (req, res) => {
+  try {
+    const teamID = req.params.id;
+
+    const players = await Player.findAll({
+      where: { TeamID: teamID },
+      include: [
+        { model: BattingPerformance },
+        { model: BowlingPerformance },
+        { model: FieldingPerformance },
+      ],
+    });
+
+    const leaderboard = players.map((player) => {
+      const battingPoints = player.BattingPerformance
+        ? player.BattingPerformance.Runs * 1
+        : 0;
+      const bowlingPoints = player.BowlingPerformance
+        ? player.BowlingPerformance.Wickets * 10
+        : 0;
+      const fieldingPoints = player.FieldingPerformance
+        ? player.FieldingPerformance.Catches * 5
+        : 0;
+
+      return {
+        PlayerID: player.PlayerID,
+        Name: player.Name,
+        TotalPoints: battingPoints + bowlingPoints + fieldingPoints,
+      };
+    });
+
+    leaderboard.sort((a, b) => b.TotalPoints - a.TotalPoints);
+
+    res.json(leaderboard);
+  } catch (error) {
+    console.error("Error fetching leaderboard:", error);
+    res.status(500).json({ error: "Error fetching leaderboard" });
   }
 });
 

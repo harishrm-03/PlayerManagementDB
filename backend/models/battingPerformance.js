@@ -2,8 +2,12 @@ module.exports = (sequelize, DataTypes) => {
   const BattingPerformance = sequelize.define("BattingPerformance", {
     PlayerID: { 
       type: DataTypes.INTEGER, 
-      primaryKey: true,
-      references: { model: "Players", key: "PlayerID" }, 
+      primaryKey: true 
+    },
+    MatchID: { 
+      type: DataTypes.INTEGER, 
+      allowNull: true, 
+      references: { model: "Matches", key: "MatchID" }, 
       onDelete: "CASCADE", 
       onUpdate: "CASCADE" 
     },
@@ -22,6 +26,7 @@ module.exports = (sequelize, DataTypes) => {
 
   BattingPerformance.associate = (models) => {
     BattingPerformance.belongsTo(models.Player, { foreignKey: "PlayerID", onDelete: "CASCADE", onUpdate: "CASCADE" });
+    BattingPerformance.belongsTo(models.Match, { foreignKey: "MatchID", onDelete: "CASCADE", onUpdate: "CASCADE" });
   };
 
   return BattingPerformance;

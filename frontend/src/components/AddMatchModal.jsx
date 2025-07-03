@@ -6,9 +6,12 @@ import {
   DialogActions,
   TextField,
   Button,
+  MenuItem,
 } from "@mui/material";
+import API from "../services/api";
 
 const AddMatchModal = ({ open, onClose, onAdd, initialData }) => {
+  const [teams, setTeams] = useState([]);
   const [team1ID, setTeam1ID] = useState("");
   const [team2ID, setTeam2ID] = useState("");
   const [winnerTeamID, setWinnerTeamID] = useState("");
@@ -17,6 +20,18 @@ const AddMatchModal = ({ open, onClose, onAdd, initialData }) => {
   const [matchType, setMatchType] = useState("");
 
   useEffect(() => {
+    // Fetch all teams for the dropdown
+    const fetchTeams = async () => {
+      try {
+        const response = await API.get("/teams");
+        setTeams(response.data);
+      } catch (error) {
+        console.error("Error fetching teams:", error);
+      }
+    };
+
+    fetchTeams();
+
     if (initialData) {
       setTeam1ID(initialData.Team1ID || "");
       setTeam2ID(initialData.Team2ID || "");
@@ -30,6 +45,12 @@ const AddMatchModal = ({ open, onClose, onAdd, initialData }) => {
   const handleSubmit = () => {
     if (!team1ID || !team2ID || !date || !venue || !matchType) {
       alert("Please fill in all required fields.");
+      return;
+    }
+
+    // Ensure the winning team is one of the two participating teams
+    if (winnerTeamID && winnerTeamID !== team1ID && winnerTeamID !== team2ID) {
+      alert("The winning team must be one of the two participating teams.");
       return;
     }
 
@@ -55,27 +76,61 @@ const AddMatchModal = ({ open, onClose, onAdd, initialData }) => {
     <Dialog open={open} onClose={onClose}>
       <DialogTitle>{initialData ? "Edit Match" : "Add Match"}</DialogTitle>
       <DialogContent>
+        {/* Team 1 Dropdown */}
         <TextField
-          label="Team 1 ID"
+          select
+          label="Team 1"
           fullWidth
           margin="normal"
           value={team1ID}
           onChange={(e) => setTeam1ID(e.target.value)}
-        />
+        >
+          {teams.map((team) => (
+            <MenuItem key={team.TeamID} value={team.TeamID}>
+              {team.TeamName}
+            </MenuItem>
+          ))}
+        </TextField>
+
+        {/* Team 2 Dropdown */}
         <TextField
-          label="Team 2 ID"
+          select
+          label="Team 2"
           fullWidth
           margin="normal"
           value={team2ID}
           onChange={(e) => setTeam2ID(e.target.value)}
-        />
+        >
+          {teams.map((team) => (
+            <MenuItem key={team.TeamID} value={team.TeamID}>
+              {team.TeamName}
+            </MenuItem>
+          ))}
+        </TextField>
+
+        {/* Winner Team Dropdown */}
         <TextField
-          label="Winner Team ID"
+          select
+          label="Winner Team"
           fullWidth
           margin="normal"
           value={winnerTeamID}
           onChange={(e) => setWinnerTeamID(e.target.value)}
-        />
+        >
+          <MenuItem value="">TBD</MenuItem>
+          {team1ID && (
+            <MenuItem value={team1ID}>
+              {teams.find((team) => team.TeamID === parseInt(team1ID))?.TeamName}
+            </MenuItem>
+          )}
+          {team2ID && (
+            <MenuItem value={team2ID}>
+              {teams.find((team) => team.TeamID === parseInt(team2ID))?.TeamName}
+            </MenuItem>
+          )}
+        </TextField>
+
+        {/* Date Input */}
         <TextField
           label="Date"
           type="date"
@@ -84,6 +139,8 @@ const AddMatchModal = ({ open, onClose, onAdd, initialData }) => {
           value={date}
           onChange={(e) => setDate(e.target.value)}
         />
+
+        {/* Venue Input */}
         <TextField
           label="Venue"
           fullWidth
@@ -91,6 +148,8 @@ const AddMatchModal = ({ open, onClose, onAdd, initialData }) => {
           value={venue}
           onChange={(e) => setVenue(e.target.value)}
         />
+
+        {/* Match Type Input */}
         <TextField
           label="Match Type"
           fullWidth

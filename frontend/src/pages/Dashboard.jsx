@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Typography, Container, Grid, Card, CardContent, Button } from "@mui/material";
+import { Typography, Container, Grid, Card, CardContent } from "@mui/material";
+import Sidebar from "../components/Sidebar"; // Import the Sidebar component
 import API from "../services/api";
 
 const Dashboard = () => {

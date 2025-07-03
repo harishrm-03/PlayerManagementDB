@@ -44,6 +44,9 @@ router.get("/", async (req, res) => {
         { model: Team, as: "Team1", attributes: ["TeamName"] },
         { model: Team, as: "Team2", attributes: ["TeamName"] },
         { model: Team, as: "Winner", attributes: ["TeamName"] },
+        { model: Player, as: "BestBowler", attributes: ["Name"] },
+        { model: Player, as: "BestBatsman", attributes: ["Name"] },
+        { model: Player, as: "PlayerOfTheMatch", attributes: ["Name"] },
       ],
     });
     res.json(matches);
@@ -55,31 +58,43 @@ router.get("/", async (req, res) => {
 // Get a match by ID
 router.get("/:id", async (req, res) => {
   try {
+    console.log("Fetching match details for ID:", req.params.id);
+
     const match = await Match.findByPk(req.params.id, {
       include: [
         { model: Team, as: "Team1", attributes: ["TeamName"] },
         { model: Team, as: "Team2", attributes: ["TeamName"] },
         { model: Team, as: "Winner", attributes: ["TeamName"] },
+        { model: Player, as: "BestBowler", attributes: ["Name"] },
+        { model: Player, as: "BestBatsman", attributes: ["Name"] },
+        { model: Player, as: "PlayerOfTheMatch", attributes: ["Name"] },
       ],
     });
 
     if (!match) {
+      console.error("Match not found for ID:", req.params.id);
       return res.status(404).json({ error: "Match not found" });
     }
 
-    // Fetch batting and bowling performances for the match
+    console.log("Match details fetched successfully:", match);
+
     const battingPerformances = await BattingPerformance.findAll({
       where: { MatchID: match.MatchID },
       include: [{ model: Player, attributes: ["Name"] }],
     });
+
+    console.log("Batting performances fetched successfully:", battingPerformances);
 
     const bowlingPerformances = await BowlingPerformance.findAll({
       where: { MatchID: match.MatchID },
       include: [{ model: Player, attributes: ["Name"] }],
     });
 
+    console.log("Bowling performances fetched successfully:", bowlingPerformances);
+
     res.json({ match, battingPerformances, bowlingPerformances });
   } catch (error) {
+    console.error("Error fetching match details:", error);
     res.status(500).json({ error: "Error fetching match details" });
   }
 });
